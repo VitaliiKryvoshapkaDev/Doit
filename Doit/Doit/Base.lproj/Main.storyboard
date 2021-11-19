@@ -11,13 +11,13 @@
         <scene sceneID="prS-O6-fWj">
             <objects>
                 <tableViewController id="WJX-YD-qw4" customClass="TaskListController" customModule="Doit" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="Y8a-nj-wHa">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" id="Y8a-nj-wHa">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="taskCellConstraints" id="X0f-Fi-hJX">
-                                <rect key="frame" x="0.0" y="44.666666030883789" width="414" height="42.666667938232422"/>
+                                <rect key="frame" x="0.0" y="49" width="414" height="42.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="X0f-Fi-hJX" id="CkN-iU-GXw">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="42.666667938232422"/>
@@ -49,13 +49,49 @@
                                     </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="ycH-DC-6sF">
-                                <rect key="frame" x="0.0" y="87.333333969116211" width="414" height="43.666667938232422"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="taskCellStack" id="ycH-DC-6sF" customClass="TaskCell" customModule="Doit" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="91.666667938232422" width="414" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ycH-DC-6sF" id="9XD-wy-evv">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="43.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="hOX-7b-K9Y">
+                                            <rect key="frame" x="20" y="11.000000000000002" width="374" height="21.666666666666671"/>
+                                        </stackView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DOi-3V-Gom">
+                                            <rect key="frame" x="20" y="11.000000000000002" width="42" height="21.666666666666671"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ptw-PR-igi">
+                                            <rect key="frame" x="72" y="11.000000000000002" width="322" height="21.666666666666671"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailingMargin" secondItem="Ptw-PR-igi" secondAttribute="trailing" id="0Bz-5F-HNY"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="hOX-7b-K9Y" secondAttribute="trailing" id="1Ha-GM-Tr5"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="hOX-7b-K9Y" secondAttribute="bottom" id="66u-Jj-5zS"/>
+                                        <constraint firstItem="DOi-3V-Gom" firstAttribute="top" secondItem="9XD-wy-evv" secondAttribute="topMargin" id="ANG-N7-DQr"/>
+                                        <constraint firstItem="DOi-3V-Gom" firstAttribute="centerY" secondItem="9XD-wy-evv" secondAttribute="centerY" id="D25-xy-2pJ"/>
+                                        <constraint firstItem="Ptw-PR-igi" firstAttribute="centerY" secondItem="9XD-wy-evv" secondAttribute="centerY" id="DYl-Wc-UcF"/>
+                                        <constraint firstItem="DOi-3V-Gom" firstAttribute="leading" secondItem="9XD-wy-evv" secondAttribute="leadingMargin" id="Mvv-CL-Jp9"/>
+                                        <constraint firstItem="Ptw-PR-igi" firstAttribute="top" secondItem="9XD-wy-evv" secondAttribute="topMargin" id="dvi-HW-QvQ"/>
+                                        <constraint firstItem="hOX-7b-K9Y" firstAttribute="leading" secondItem="9XD-wy-evv" secondAttribute="leadingMargin" id="fJR-mb-UXS"/>
+                                        <constraint firstItem="hOX-7b-K9Y" firstAttribute="top" secondItem="9XD-wy-evv" secondAttribute="topMargin" id="h6v-G3-BRX"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="DOi-3V-Gom" secondAttribute="bottom" id="iDg-7N-MFd"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="Ptw-PR-igi" secondAttribute="bottom" id="iiQ-WL-EtL"/>
+                                        <constraint firstItem="Ptw-PR-igi" firstAttribute="leading" secondItem="DOi-3V-Gom" secondAttribute="trailing" constant="10" id="tPT-SR-x8X"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="symbol" destination="DOi-3V-Gom" id="fdn-uL-E0i"/>
+                                    <outlet property="title" destination="Ptw-PR-igi" id="tOc-Dv-fHJ"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

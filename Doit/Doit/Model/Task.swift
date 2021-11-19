@@ -23,7 +23,7 @@ enum TaskStatus{
 //Protocol to type "Task"
 protocol TaskProtocol{
     //Name
-    var title: String { get set }
+    var title: String {get set}
     var type: TaskPriority {get set}
     var status: TaskStatus {get set}
 }

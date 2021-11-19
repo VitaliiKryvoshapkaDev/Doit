@@ -10,7 +10,7 @@ import Foundation
 //Protocol to essence "TaskStorage"
 protocol TaskStorageProtocol{
     func loadTasks() -> [TaskProtocol]
-    func saveTasks(_ tasks: [TaskProtocol])
+  //  func saveTasks(_ tasks: [TaskProtocol])
 }
 
 
@@ -28,8 +28,8 @@ class TaskStorage: TaskStorageProtocol{
         return testTasks
     }
     
-    func saveTasks(_ tasks: [TaskProtocol]) {
-        <#code#>
-    }
+//    func saveTasks(_ tasks: [TaskProtocol]) {
+//        <#code#>
+//    }
     
 }
