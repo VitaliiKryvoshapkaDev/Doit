@@ -1,5 +1,5 @@
 //
-//  TaskEditController.swift
+//  TaskTypeController.swift
 //  Doit
 //
 //  Created by Vitalii Kryvoshapka on 21.11.2021.
@@ -7,34 +7,31 @@
 
 import UIKit
 
-class TaskEditController: UITableViewController {
+class TaskTypeController: UITableViewController {
     
-    @IBOutlet weak var taskTitle: UITextField!
-    @IBOutlet weak var taskTypeLabel: UILabel!
+    //MARK: - Use xib cell -
+    //1. Tuple show type of task
+    typealias TypeCellDescription = (type: TaskPriority, title: String, description: String)
     
-    // Task parameters
-    var taskText: String = ""
-    var taskType: TaskPriority = .normal
-    var taskStatus: TaskStatus = .planned
-    
-    var doAfterEdit: ((String, TaskPriority, TaskStatus) -> Void)?
-    
-    // Task type name in rigst button (2 Row)
-    private var taskTitles: [TaskPriority: String] = [
-        .important: "Важная",
-        .normal: "Текущая"
+    //2. Collection of use type of task
+    private var taskTypesInformation: [TypeCellDescription] = [
+        (type: .important, title: "Важная", description: "Такой тип задач является наиболее приоритетным для выполнения. Все важные задачи выводятся в самом верху списка задач"),
+        (type: .normal, title: "Текущая", description: "Задача с обычным приоритетом")
     ]
+    //3. Select Priority
+    var selectedType: TaskPriority = .normal
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.backgroundColor = #colorLiteral(red: 0.290, green: 0.427, blue: 0.533, alpha: 1.000)
+        //MARK: REGISTER Xib
+        //Register Xib Cell
+        //1. Get UINib type
+        let cellTypeNib = UINib(nibName: "TaskTypeCell", bundle: nil)
+        //2. Register castom cell in tableView
+        tableView.register(cellTypeNib, forCellReuseIdentifier: "TaskTypeCell")
         
-        // Refresh text field with task name
-        taskTitle?.text = taskText
-        
-        //Refresh label (2 row type task)
-        taskTypeLabel?.text = taskTitles[taskType]
         
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -52,18 +49,39 @@ class TaskEditController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 3
+        return taskTypesInformation.count
     }
     
-    /*
-     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-     let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-     
-     // Configure the cell...
-     
-     return cell
-     }
-     */
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        //1. Get reusable castom cell with ID
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskTypeCell", for: indexPath) as! TaskTypeCell
+        //2. Get current element, what show in row
+        let typeDescription = taskTypesInformation[indexPath.row]
+        //3. Add data to cell
+        cell.typeTitle.text = typeDescription.title
+        cell.typeDescription.text = typeDescription.description
+        //4. If type selected, mark them
+        if selectedType == typeDescription.type{
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+        }
+        return cell
+    }
+    
+    //MARK: - Transfer data betwen controllers -
+    // обработчик Select Type
+    var doAfterTypeSelected: ((TaskPriority) -> Void)?
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Get need type
+        let selectedType = taskTypesInformation[indexPath.row].type
+        // Cll обработчиk
+        doAfterTypeSelected?(selectedType)
+        // Move to previous screen
+        navigationController?.popViewController(animated: true)
+    }
     
     /*
      // Override to support conditional editing of the table view.

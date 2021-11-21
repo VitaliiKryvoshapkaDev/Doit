@@ -1,5 +1,5 @@
 //
-//  TaskTypeController.swift
+//  TaskEditController.swift
 //  Doit
 //
 //  Created by Vitalii Kryvoshapka on 21.11.2021.
@@ -7,31 +7,34 @@
 
 import UIKit
 
-class TaskTypeController: UITableViewController {
+class TaskEditController: UITableViewController {
     
-    //MARK: - Use xib cell -
-    //1. Tuple show type of task
-    typealias TypeCellDescription = (type: TaskPriority, title: String, description: String)
+    @IBOutlet weak var taskTitle: UITextField!
+    @IBOutlet weak var taskTypeLabel: UILabel!
     
-    //2. Collection of use type of task
-    private var taskTypesInformation: [TypeCellDescription] = [
-        (type: .important, title: "Важная", description: "Такой тип задач является наиболее приоритетным для выполнения. Все важные задачи выводятся в самом верху списка задач"),
-        (type: .normal, title: "Текущая", description: "Задача с обычным приоритетом")
+    // Task parameters
+    var taskText: String = ""
+    var taskType: TaskPriority = .normal
+    var taskStatus: TaskStatus = .planned
+    
+    var doAfterEdit: ((String, TaskPriority, TaskStatus) -> Void)?
+    
+    // Task type name in rigst button (2 Row)
+    private var taskTitles: [TaskPriority: String] = [
+        .important: "Важная",
+        .normal: "Текущая"
     ]
-    //3. Select Priority
-    var selectedType: TaskPriority = .normal
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //MARK: REGISTER Xib
-        //Register Xib Cell
-        //1. Get UINib type
-        let cellTypeNib = UINib(nibName: "TaskTypeCell", bundle: nil)
-        //2. Register castom cell in tableView
-        tableView.register(cellTypeNib, forCellReuseIdentifier: "TaskTypeCell")
+        tableView.backgroundColor = #colorLiteral(red: 0.290, green: 0.427, blue: 0.533, alpha: 1.000)
         
+        // Refresh text field with task name
+        taskTitle?.text = taskText
+        
+        //Refresh label (2 row type task)
+        taskTypeLabel?.text = taskTitles[taskType]
         
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -49,27 +52,35 @@ class TaskTypeController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return taskTypesInformation.count
+        return 3
     }
     
+    //MARK: - Move Data from TaskEditController to TaskTypecontroller -
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        //1. Get reusable castom cell with ID
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskTypeCell", for: indexPath) as! TaskTypeCell
-        //2. Get current element, what show in row
-        let typeDescription = taskTypesInformation[indexPath.row]
-        //3. Add data to cell
-        cell.typeTitle.text = typeDescription.title
-        cell.typeDescription.text = typeDescription.description
-        //4. If type selected, mark them
-        if selectedType == typeDescription.type{
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toTaskTypeScreen"{
+            // Link to sedtination controller
+            let destination = segue.destination as! TaskTypeController
+            // Send selected type
+            destination.selectedType = taskType
+            // Send handler selected type
+            destination.doAfterTypeSelected = { [unowned self] selectedType in
+                taskType = selectedType
+                // Refresh mark with type
+                taskTypeLabel?.text = taskTitles[taskType]
+            }
         }
-        return cell
     }
     
+    /*
+     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+     let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+     
+     // Configure the cell...
+     
+     return cell
+     }
+     */
     
     /*
      // Override to support conditional editing of the table view.
