@@ -13,7 +13,20 @@ class TaskListController: UITableViewController {
     //Tasks Starage
     var tasksStorage: TaskStorageProtocol = TaskStorage()
     //tasks Collection
-    var tasks: [TaskPriority:[TaskProtocol]] = [:]
+    var tasks: [TaskPriority:[TaskProtocol]] = [:] {
+
+        //Sort task from task list
+        didSet{
+            for (tasksGroupPriority, tasksGroup) in tasks{
+                tasks[tasksGroupPriority] = tasksGroup.sorted {
+                    task1, task2 in
+                    let task1Position = taskStatusPosition.firstIndex(of: task1.status) ?? 0
+                    let task2Position = taskStatusPosition.firstIndex(of: task2.status) ?? 0
+                    return task1Position < task2Position
+                }
+            }
+        }
+    }
     
     //порядок отображения секций по типам
     //индекс в массиве соответствует индексу секции в таблице
@@ -22,7 +35,7 @@ class TaskListController: UITableViewController {
     
     var taskStatusPosition:[TaskStatus] = [.planned, .completed]
     
-    
+    //MARK: -LOAD TASKS- METHOD
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -43,17 +56,6 @@ class TaskListController: UITableViewController {
         }
         //Load & check task from storage
         tasksStorage.loadTasks().forEach { task in tasks[task.type]?.append(task)
-        }
-        
-        //Sort task from task list
-        for (tasksGroupPriority, tasksGroup) in tasks{
-            tasks[tasksGroupPriority] = tasksGroup.sorted {
-                task1, task2 in
-                let task1Position = taskStatusPosition.firstIndex(of: task1.status) ?? 0
-                let task2Position = taskStatusPosition.firstIndex(of: task2.status) ?? 0
-                
-                return task1Position < task2Position
-            }
         }
     }
     
@@ -167,6 +169,27 @@ class TaskListController: UITableViewController {
             cell.symbol.textColor = .lightGray
         }
         return cell
+    }
+    
+    
+    //MARK: - Realised taks status with didDelectRowAt (COMPLETED PLANNED)
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //1 .Check task life?
+        let taskType = sectionsTypesPosition[indexPath.section]
+        guard let _ = tasks[taskType]?[indexPath.row] else {
+            return
+        }
+        //2 .Make sure that task not complete
+        guard tasks[taskType]![indexPath.row].status == .planned else {
+            // delete highlighted from row
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
+        //3. Do selected task DONE
+        tasks[taskType]![indexPath.row].status = .completed
+        //4 . Reload table section
+        tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
     }
     
     /*
