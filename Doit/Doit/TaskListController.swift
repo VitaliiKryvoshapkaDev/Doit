@@ -172,7 +172,7 @@ class TaskListController: UITableViewController {
     }
     
     
-    //MARK: - Realised taks status with didDelectRowAt (COMPLETED PLANNED)
+    //MARK: - Realise task status with didDelectRowAt (COMPLETED)
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //1 .Check task life?
@@ -191,6 +191,28 @@ class TaskListController: UITableViewController {
         //4 . Reload table section
         tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
     }
+    
+    //MARK: Realise task status (PLANNED)
+    
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // Get data about taks, to swipe that to planned
+        let taskType = sectionsTypesPosition[indexPath.section]
+        guard let _ = tasks[taskType]?[indexPath.row] else {
+            return nil
+        }
+        // Check, this task have a "completed" Status
+        guard tasks[taskType]![indexPath.row].status == .completed else {
+            return nil
+        }
+        //Create Action to change status
+        let actionSwipeInstance = UIContextualAction(style: .normal, title: "Не выполнена") {_,_,_ in
+            self.tasks[taskType]![indexPath.row].status = .planned
+            self.tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
+        }
+        //return done object
+        return UISwipeActionsConfiguration(actions: [actionSwipeInstance])
+    }
+    
     
     /*
      // Override to support conditional editing of the table view.
