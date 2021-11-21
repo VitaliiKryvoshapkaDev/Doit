@@ -40,9 +40,11 @@ class TaskListController: UITableViewController {
         super.viewDidLoad()
         
         //Bacground image
-        let wallpaper = UIImageView(image: UIImage(named: "868844"))
-        wallpaper.contentMode = .scaleAspectFill
-        tableView.backgroundView = wallpaper
+//        let wallpaper = UIImageView(image: UIImage(named: "868844"))
+//        wallpaper.contentMode = .scaleAspectFill
+//        tableView.backgroundView = wallpaper
+        tableView.backgroundColor = #colorLiteral(red: 0.776, green: 0.804, blue: 0.843, alpha: 1.000)
+        editButtonItem.tintColor = #colorLiteral(red: 0.000, green: 0.118, blue: 0.220, alpha: 1.000)
         
         //Load Tasks
         loadTasks()
@@ -170,6 +172,9 @@ class TaskListController: UITableViewController {
             cell.title.textColor = .lightGray
             cell.symbol.textColor = .lightGray
         }
+        //Cell Color
+        cell.backgroundColor = UIColor.clear
+
         return cell
     }
     
@@ -223,6 +228,7 @@ class TaskListController: UITableViewController {
         tasks[taskType]?.remove(at: indexPath.row)
         //Delete ROW
         tableView.deleteRows(at: [indexPath], with: .automatic)
+        
     }
     
     //MARK: - Move At Row - Hand sort
