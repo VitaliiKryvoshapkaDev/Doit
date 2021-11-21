@@ -14,7 +14,7 @@ class TaskListController: UITableViewController {
     var tasksStorage: TaskStorageProtocol = TaskStorage()
     //tasks Collection
     var tasks: [TaskPriority:[TaskProtocol]] = [:] {
-
+        
         //Sort task from task list
         didSet{
             for (tasksGroupPriority, tasksGroup) in tasks{
@@ -47,6 +47,8 @@ class TaskListController: UITableViewController {
         //Load Tasks
         loadTasks()
         
+        //ADD Edit Button
+        navigationItem.leftBarButtonItem = editButtonItem
     }
     
     private func loadTasks(){
@@ -76,13 +78,13 @@ class TaskListController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return currentTasksType.count
     }
-    
+    //MARL: Use CONSTRAINTS OR STACK
     // Cell for Row
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //return getConfiguredTaskCell_constraints(for: indexPath)
         return getConfiguretTaskCell_stack(for: indexPath)
     }
-    
+    //MARK: - Show task list with prototype (Cnstraints) With TAGs-
     // ячейка на основе ограничений
     private func getConfiguredTaskCell_constraints(for indexPath: IndexPath) -> UITableViewCell{
         
@@ -213,6 +215,41 @@ class TaskListController: UITableViewController {
         return UISwipeActionsConfiguration(actions: [actionSwipeInstance])
     }
     
+    //MARK: - Delete Task -
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        let taskType = sectionsTypesPosition[indexPath.section]
+        //Delete TASK
+        tasks[taskType]?.remove(at: indexPath.row)
+        //Delete ROW
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+    }
+    
+    //MARK: - Move At Row - Hand sort
+    // Hand sort task
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        // From Section
+        let taskTypeFrom = sectionsTypesPosition[sourceIndexPath.section]
+        // To Section
+        let taskTypeTo = sectionsTypesPosition[destinationIndexPath.section]
+        
+        // Unwrap task and copy them
+        guard let movedTask = tasks[taskTypeFrom]?[sourceIndexPath.row] else {
+            return
+        }
+        
+        //Delete task from old position
+        tasks[taskTypeFrom]!.remove(at: sourceIndexPath.row)
+        //Insert task to new position
+        tasks[taskTypeTo]!.insert(movedTask, at: destinationIndexPath.row)
+        
+        // IF sections change, change task type with new position
+        if taskTypeFrom != taskTypeTo{
+            tasks[taskTypeTo]![destinationIndexPath.row].type = taskTypeTo
+        }
+        //Reload Data
+        tableView.reloadData()
+    }
     
     /*
      // Override to support conditional editing of the table view.
