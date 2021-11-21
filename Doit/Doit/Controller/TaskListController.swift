@@ -40,9 +40,9 @@ class TaskListController: UITableViewController {
         super.viewDidLoad()
         
         //Bacground image
-//        let wallpaper = UIImageView(image: UIImage(named: "868844"))
-//        wallpaper.contentMode = .scaleAspectFill
-//        tableView.backgroundView = wallpaper
+        //        let wallpaper = UIImageView(image: UIImage(named: "868844"))
+        //        wallpaper.contentMode = .scaleAspectFill
+        //        tableView.backgroundView = wallpaper
         tableView.backgroundColor = #colorLiteral(red: 0.776, green: 0.804, blue: 0.843, alpha: 1.000)
         editButtonItem.tintColor = #colorLiteral(red: 0.000, green: 0.118, blue: 0.220, alpha: 1.000)
         
@@ -174,7 +174,7 @@ class TaskListController: UITableViewController {
         }
         //Cell Color
         cell.backgroundColor = UIColor.clear
-
+        
         return cell
     }
     
@@ -207,17 +207,43 @@ class TaskListController: UITableViewController {
         guard let _ = tasks[taskType]?[indexPath.row] else {
             return nil
         }
-        // Check, this task have a "completed" Status
-        guard tasks[taskType]![indexPath.row].status == .completed else {
-            return nil
-        }
-        //Create Action to change status
-        let actionSwipeInstance = UIContextualAction(style: .normal, title: "Не выполнена") {_,_,_ in
+        
+        // действие для изменения статуса на "запланирована"
+        let actionSwipeInstance = UIContextualAction(style: .normal, title: "Не выполнена") { _,_,_ in
             self.tasks[taskType]![indexPath.row].status = .planned
             self.tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
         }
+        
+        // Create Action to change status "Planned"
+        let actionEditInstance = UIContextualAction(style: .normal, title: "Изменить") {_,_,_ in
+            // load scene from storyboard
+            let editScreen = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TaskEditController") as! TaskEditController
+            // Send value redactet task
+            editScreen.taskText = self.tasks[taskType]![indexPath.row].title
+            editScreen.taskType = self.tasks[taskType]![indexPath.row].type
+            editScreen.taskStatus = self.tasks[taskType]![indexPath.row].status
+            // Transfer handler to save task
+            editScreen.doAfterEdit = {[unowned self] title, type, status in
+                let editedTask = Task(title: title, type: type, status: status)
+                tasks[taskType]![indexPath.row] = editedTask
+                tableView.reloadData()
+            }
+            // Move to Edit screen
+            self.navigationController?.pushViewController(editScreen, animated: true)
+        }
+        // Change backround color of swipe
+        actionEditInstance.backgroundColor = .darkGray
+        
+        // Create object, описывающий доступные действия
+        // depend of status taks (Show 1 or 2 Action)
+        let actionsConfiguration: UISwipeActionsConfiguration
+        if tasks[taskType]![indexPath.row].status == .completed{
+            actionsConfiguration = UISwipeActionsConfiguration(actions: [actionSwipeInstance, actionEditInstance])
+        } else {
+            actionsConfiguration = UISwipeActionsConfiguration(actions: [actionEditInstance])
+        }
         //return done object
-        return UISwipeActionsConfiguration(actions: [actionSwipeInstance])
+        return actionsConfiguration
     }
     
     //MARK: - Delete Task -
