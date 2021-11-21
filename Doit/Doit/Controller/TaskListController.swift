@@ -11,7 +11,7 @@ class TaskListController: UITableViewController {
     
     
     //Tasks Starage
-    var tasksStorage: TaskStorageProtocol = TaskStorage()
+    var tasksStorage: TaskStorageProtocol = TasksStorage()
     //tasks Collection
     var tasks: [TaskPriority:[TaskProtocol]] = [:] {
         
@@ -25,9 +25,14 @@ class TaskListController: UITableViewController {
                     return task1Position < task2Position
                 }
             }
+    //MARK: - Save Data to UserDefaults -
+            var savingArray: [TaskProtocol] = []
+            tasks.forEach { _, value in savingArray += value
+            }
+            tasksStorage.saveTasks(savingArray)
         }
     }
-    
+
     //порядок отображения секций по типам
     //индекс в массиве соответствует индексу секции в таблице
     var sectionsTypesPosition: [TaskPriority] = [.important,.normal]
@@ -60,6 +65,20 @@ class TaskListController: UITableViewController {
         }
         //Load & check task from storage
         tasksStorage.loadTasks().forEach { task in tasks[task.type]?.append(task)
+        }
+    }
+    
+    //MARK: Fix Error with saveTask load
+    // Get task list, их разбор и установка в свойство tasks
+    func setTasks(_ taskCollection: [TaskProtocol]){
+        // Prepare collections with data
+        // Use only tasks with sections
+        sectionsTypesPosition.forEach { taskType in
+            tasks[taskType] = []
+        }
+        // Load & parsing tasks from storage
+        taskCollection.forEach { task in
+            tasks[task.type]?.append(task)
         }
     }
     
