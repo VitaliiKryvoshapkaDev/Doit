@@ -11,6 +11,8 @@ class TaskEditController: UITableViewController {
     
     @IBOutlet weak var taskTitle: UITextField!
     @IBOutlet weak var taskTypeLabel: UILabel!
+    @IBOutlet weak var taskStatusSwitch: UISwitch!
+    
     
     // Task parameters
     var taskText: String = ""
@@ -33,8 +35,13 @@ class TaskEditController: UITableViewController {
         // Refresh text field with task name
         taskTitle?.text = taskText
         
-        //Refresh label (2 row type task)
+        // Refresh label (2 row type task)
         taskTypeLabel?.text = taskTitles[taskType]
+        
+        // Refresh task status (Switch)
+        if taskStatus == .completed{
+            taskStatusSwitch.isOn = true
+        }
         
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
