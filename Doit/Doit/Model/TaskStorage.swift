@@ -23,7 +23,8 @@ class TaskStorage: TaskStorageProtocol{
                                          Task(title: "Learn Swift", type: .important, status: .completed),
                                          Task(title: "By new iPhone", type: .normal, status: .completed),
                                          Task(title: "Buy flowers to Alisa", type: .important, status: .planned),
-                                         Task(title: "Call grandmother", type: .important, status: .planned)
+                                         Task(title: "Call grandmother", type: .important, status: .planned),
+                                         Task(title: "Написать Артуру по поводу встречи в компании, но перед этим сделать резюме и закончить приложение и бла бла бла", type: .important, status: .planned)
         ]
         return testTasks
     }

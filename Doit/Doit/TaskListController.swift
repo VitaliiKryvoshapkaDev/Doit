@@ -20,6 +20,8 @@ class TaskListController: UITableViewController {
     var sectionsTypesPosition: [TaskPriority] = [.important,.normal]
     
     
+    var taskStatusPosition:[TaskStatus] = [.planned, .completed]
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +43,17 @@ class TaskListController: UITableViewController {
         }
         //Load & check task from storage
         tasksStorage.loadTasks().forEach { task in tasks[task.type]?.append(task)
+        }
+        
+        //Sort task from task list
+        for (tasksGroupPriority, tasksGroup) in tasks{
+            tasks[tasksGroupPriority] = tasksGroup.sorted {
+                task1, task2 in
+                let task1Position = taskStatusPosition.firstIndex(of: task1.status) ?? 0
+                let task2Position = taskStatusPosition.firstIndex(of: task2.status) ?? 0
+                
+                return task1Position < task2Position
+            }
         }
     }
     
@@ -64,7 +77,8 @@ class TaskListController: UITableViewController {
     
     // Cell for Row
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return getConfiguredTaskCell_constraints(for: indexPath)
+        //return getConfiguredTaskCell_constraints(for: indexPath)
+        return getConfiguretTaskCell_stack(for: indexPath)
     }
     
     // ячейка на основе ограничений
@@ -128,7 +142,32 @@ class TaskListController: UITableViewController {
     }
     
     
+    //MARK: - Show task list with prototype (Stack View) -
     
+    //StackView Cell
+    private func getConfiguretTaskCell_stack(for indexPath: IndexPath) -> UITableViewCell {
+        //Load Cell prototype with ID
+        let cell = tableView.dequeueReusableCell(withIdentifier: "taksCellStack", for: indexPath) as! TaskCell
+        //Get data about taks, what need to show in cell
+        let taskType = sectionsTypesPosition[indexPath.section]
+        guard let currentTask = tasks[taskType]?[indexPath.row] else {
+            return cell
+        }
+        //Change text in cell
+        cell.title.text = currentTask.title
+        //Change symbol in cell
+        cell.symbol.text = getSymbolForTask(with: currentTask.status)
+        
+        //Change text color
+        if currentTask.status == .planned {
+            cell.title.textColor = .black
+            cell.symbol.textColor = .black
+        } else {
+            cell.title.textColor = .lightGray
+            cell.symbol.textColor = .lightGray
+        }
+        return cell
+    }
     
     /*
      // Override to support conditional editing of the table view.
