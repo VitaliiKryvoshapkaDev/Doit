@@ -79,6 +79,21 @@ class TaskEditController: UITableViewController {
         }
     }
     
+    //MARK: - Save task button -
+    
+    @IBAction func saveTask(_ sender: UIBarButtonItem) {
+        //Get actual value
+        let title = taskTitle?.text ?? ""
+        let type = taskType
+        let status: TaskStatus = taskStatusSwitch.isOn ? .completed : .planned
+        // Call handler
+        doAfterEdit?(title, type, status)
+        // Go back to previous screen
+        navigationController?.popViewController(animated: true)
+    }
+    
+    
+    
     /*
      override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
      let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
